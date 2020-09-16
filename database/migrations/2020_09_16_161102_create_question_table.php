@@ -15,8 +15,8 @@ class CreateQuestionTable extends Migration
     {
         Schema::create('question', function (Blueprint $table) {
             $table->id();
-            $table->string('text');
-            $table->string('image_url');
+            $table->string('text')->nullable();
+            $table->string('image_url')->nullable();
             $table->unsignedInteger('quiz_id');
             $table->text('options');
             $table->string('answer');

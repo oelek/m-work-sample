@@ -15,8 +15,8 @@ class CreateAnswerTable extends Migration
     {
         Schema::create('answer', function (Blueprint $table) {
             $table->id();
-            $table->string('answer');
-            $table->boolean('is_correct');
+            $table->string('answer')->nullable();
+            $table->boolean('is_correct')->nullable();
             $table->unsignedInteger('question_id');
             $table->unsignedInteger('game_id');
             $table->timestamp('deadline_at');
