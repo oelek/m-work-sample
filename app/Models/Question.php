@@ -9,11 +9,14 @@ class Question extends Model
 {
     use HasFactory;
 
+    protected $table = 'question';
+
     protected $fillable = [
         'text',
         'image_id',
         'options',
         'answer',
+        'quiz_id',
     ];
 
     protected $casts = [
