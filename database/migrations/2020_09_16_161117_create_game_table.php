@@ -16,6 +16,7 @@ class CreateGameTable extends Migration
         Schema::create('game', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('quiz_id');
             $table->timestamps();
         });
     }
