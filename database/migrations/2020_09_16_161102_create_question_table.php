@@ -20,6 +20,7 @@ class CreateQuestionTable extends Migration
             $table->unsignedInteger('quiz_id');
             $table->text('options');
             $table->string('answer');
+            $table->integer('order');
 
             $table->timestamps();
         });

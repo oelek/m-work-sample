@@ -34,6 +34,9 @@ class QuestionFactory extends Factory
             'options' => $options,
             'answer'  => $options[array_rand($options)],
             'quiz_id' => Quiz::factory(),
+            'order'   => function (array $attributes) {
+                return Quiz::find($attributes['quiz_id'])->questions()->count();
+            }
         ];
     }
 }
