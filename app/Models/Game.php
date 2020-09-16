@@ -9,6 +9,13 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $table = 'game';
+
+    protected $fillable = [
+        'quiz_id',
+        'user_id',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -17,5 +24,16 @@ class Game extends Model
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);
+    }
+
+    public function questions()
+    {
+        return $this->hasManyThrough(Question::class, Quiz::class)
+                    ->orderBy('order');
+    }
+
+    public function getFirstQuestionAttribute()
+    {
+        return $this->questions()->first();
     }
 }

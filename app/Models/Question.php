@@ -28,4 +28,12 @@ class Question extends Model
         return $this->belongsTo(Quiz::class);
     }
 
+    public function nextQuestion()
+    {
+        return $this->hasOneThrough(__CLASS__, Quiz::class, 'id', 'quiz_id', 'quiz_id')
+                    ->where('question.id', '!=', $this->id)
+                    ->orderBy('question.order')
+                    ->where('order', '>', $this->order);
+    }
+
 }
