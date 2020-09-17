@@ -16,11 +16,13 @@ class CreateAnswerTable extends Migration
         Schema::create('answer', function (Blueprint $table) {
             $table->id();
             $table->string('answer')->nullable();
-            $table->boolean('is_correct')->nullable();
+            $table->string('lifeline')->nullable();
+            $table->boolean('result')->nullable();
             $table->unsignedInteger('question_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('game_id');
-            $table->timestamp('deadline_at');
-            $table->timestamp('submitted_at');
+            $table->timestamp('submitted_at')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -28,12 +28,13 @@ class Game extends Model
 
     public function questions()
     {
-        return $this->hasManyThrough(Question::class, Quiz::class)
-                    ->orderBy('order');
+        return $this->hasManyThrough(Question::class,
+            Quiz::class, 'id', 'quiz_id', 'quiz_id', 'id');
     }
 
     public function getFirstQuestionAttribute()
     {
         return $this->questions()->first();
     }
+
 }

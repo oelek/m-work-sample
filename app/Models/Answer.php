@@ -9,17 +9,26 @@ class Answer extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    protected $table = 'answer';
 
     protected $casts = [
-        'is_correct' => 'bool',
+        'is_correct'   => 'bool',
+        'submitted_at' => 'datetime',
     ];
 
     protected $fillable = [
-        'is_correct',
+        'result',
         'answer',
-        'deadline_at',
+        'question_id',
+        'game_id',
+        'user_id',
         'submitted_at',
+        'created_at',
+    ];
+
+    protected $appends = [
+        'result',
+        'time_limit',
     ];
 
     public function game()
@@ -30,6 +39,30 @@ class Answer extends Model
     public function question()
     {
         return $this->belongsTo(Question::class);
+    }
+
+    public function getTimeLimitAttribute()
+    {
+        return $this->created_at->addSeconds(15);
+    }
+
+
+    public function getIsLateAttribute()
+    {
+        if ($this->submitted_at === null) {
+            return false;
+        }
+
+        return $this->submitted_at->getTimestamp() > $this->time_limit->getTimestamp();
+    }
+
+    public function getResultAttribute()
+    {
+        if ($this->getIsLateAttribute()) {
+            return 'LATE';
+        }
+
+        return $this->answer === $this->question->answer ? 'CORRECT' : 'WRONG';
     }
 
 }

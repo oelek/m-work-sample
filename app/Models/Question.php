@@ -33,7 +33,13 @@ class Question extends Model
         return $this->hasOneThrough(__CLASS__, Quiz::class, 'id', 'quiz_id', 'quiz_id')
                     ->where('question.id', '!=', $this->id)
                     ->orderBy('question.order')
-                    ->where('order', '>', $this->order);
+                    ->where('order', '>=', $this->order)
+                    ->limit(1);
+    }
+
+    public function getNextQuestionAttribute()
+    {
+        return $this->nextQuestion()->first();
     }
 
 }

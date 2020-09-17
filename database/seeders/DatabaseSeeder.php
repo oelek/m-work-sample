@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(2)->create();
+        User::factory()->create(['email' => 'game@mer.com']);
 
         Quiz::factory()
             ->has(Question::factory()->count(10))->create();

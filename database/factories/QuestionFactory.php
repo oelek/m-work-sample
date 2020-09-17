@@ -22,6 +22,8 @@ class QuestionFactory extends Factory
      */
     public function definition()
     {
+        static $order = 1;
+
         $options = [
             $this->faker->word,
             $this->faker->word,
@@ -34,9 +36,7 @@ class QuestionFactory extends Factory
             'options' => $options,
             'answer'  => $options[array_rand($options)],
             'quiz_id' => Quiz::factory(),
-            'order'   => function (array $attributes) {
-                return Quiz::find($attributes['quiz_id'])->questions()->count();
-            }
+            'order'   => $order++,
         ];
     }
 }

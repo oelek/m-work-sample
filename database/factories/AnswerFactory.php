@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Answer;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AnswerFactory extends Factory
@@ -26,6 +27,9 @@ class AnswerFactory extends Factory
         return [
             'game_id'     => Game::factory(),
             'question_id' => Question::factory(),
+            'user_id' => User::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
