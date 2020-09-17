@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "ff8d1c99-ba6d-412f-b940-af0a15b2923e",
+		"name": "Quiz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "StartGame",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8da28672-ee0d-481e-abf4-7e76e6c3618d",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"currentQuestion\", jsonData.meta.question_uri);"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dc751922-82bb-431d-aeef-e048d1f298ea",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable(\"currentOption\", null);",
+							"postman.setEnvironmentVariable(\"nextQuestion\", null);",
+							"postman.setEnvironmentVariable(\"currentQuestion\", null);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic Z2FtZUBtZXIuY29tOnBhc3N3b3Jk"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quiz_id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/games",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetQuestion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f30b3110-0fb6-4911-8d40-a3c0d275c7da",
+						"type": "text/javascript",
+						"exec": [
+							"function getRandomInt(min, max) {",
+							"    min = Math.ceil(min);",
+							"    max = Math.floor(max);",
+							"    return Math.floor(Math.random() * (max - min)) + min;",
+							"}",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var options = jsonData.data.attributes.options;",
+							"var selectedOption = options[getRandomInt(0, options.length)];",
+							"",
+							"postman.setEnvironmentVariable(\"currentOption\", selectedOption);",
+							"postman.setEnvironmentVariable(\"nextQuestion\", jsonData.meta.next_url);",
+							"postman.setEnvironmentVariable(\"gameUrl\", jsonData.meta.game_url);",
+							"",
+							"postman.setNextRequest('AnswerQuestion')",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic Z2FtZUBtZXIuY29tOnBhc3N3b3Jk"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quiz_id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000{{currentQuestion}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000{{currentQuestion}}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AnswerQuestion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4ceb2ac4-8142-4ac8-ba08-b9fc7200108e",
+						"type": "text/javascript",
+						"exec": [
+							"var nextQuestion = postman.getEnvironmentVariable(\"nextQuestion\");",
+							"postman.setEnvironmentVariable(\"currentQuestion\", nextQuestion);",
+							"",
+							"",
+							"if (nextQuestion) {",
+							"    postman.setNextRequest('GetQuestion')",
+							"} else {",
+							"    postman.setNextRequest('GetResult')",
+							"}"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1a73d38-7793-4624-8763-8b806af947a5",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic Z2FtZUBtZXIuY29tOnBhc3N3b3Jk"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"answer\": \"{{currentOption}}\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000{{currentQuestion}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000{{currentQuestion}}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetResult",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa5ddbd8-5ea1-4296-b743-3eaf22509f7f",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1a73d38-7793-4624-8763-8b806af947a5",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic Z2FtZUBtZXIuY29tOnBhc3N3b3Jk"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"answer\": \"{{currentOption}}\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000{{gameUrl}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000{{gameUrl}}"
+				}
+			},
+			"response": []
+		}
+	]
+}
