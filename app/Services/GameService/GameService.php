@@ -36,7 +36,7 @@ class GameService
         return $this->getAnswerModelForQuestion($gameId, $questionId)->question;
     }
 
-    public function answerQuestion(string $gameId, string $questionId, string $answer): Answer
+    public function recordAnswer(string $gameId, string $questionId, string $answer): Answer
     {
         $answerModel               = $this->getAnswerModelForQuestion($gameId, $questionId);
         $answerModel->answer       = $answer;
@@ -62,11 +62,13 @@ class GameService
      */
     private function getAnswerModelForQuestion(string $gameId, string $questionId): Answer
     {
-        return Answer::firstOrCreate([
-            'game_id'     => $gameId,
-            'question_id' => $questionId,
-            'user_id'     => $this->user->id,
-        ]);
+        return $this->question($gameId, $questionId)
+                    ->answers()
+                    ->firstOrCreate([
+                        'game_id'     => $gameId,
+                        'question_id' => $questionId,
+                        'user_id'     => $this->user->id,
+                    ]);
     }
 
     public function getGameResult($gameId): Collection
@@ -76,4 +78,14 @@ class GameService
                      ->get();
     }
 
+    /**
+     * @param string $gameId
+     * @param string $questionId
+     *
+     * @return Question
+     */
+    public function question(string $gameId, string $questionId): Question
+    {
+        return Game::findOrFail($gameId)->questions()->findOrFail($questionId);
+    }
 }

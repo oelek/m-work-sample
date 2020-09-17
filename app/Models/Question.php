@@ -44,4 +44,9 @@ class Question extends Model
         return $this->nextQuestion()->first();
     }
 
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+
 }

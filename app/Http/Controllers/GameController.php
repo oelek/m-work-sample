@@ -56,7 +56,7 @@ class GameController extends Controller
 
         $answer = $this->gameService
             ->user($request->user())
-            ->answerQuestion($gameId, $questionId, $request->input('answer') ?? '');
+            ->recordAnswer($gameId, $questionId, $request->input('answer') ?? '');
 
         return new AnswerResource($answer);
     }
