@@ -4,9 +4,9 @@ namespace App\Services\GameService;
 
 use App\Models\Game;
 use App\Models\Answer;
+use App\Models\Question;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class GameService
 {
@@ -23,7 +23,7 @@ class GameService
         return $this;
     }
 
-    public function createGame(string $quizId)
+    public function createGame(string $quizId): Game
     {
         return Game::create([
             'quiz_id' => $quizId,
@@ -31,12 +31,12 @@ class GameService
         ]);
     }
 
-    public function getQuestion(string $gameId, string $questionId)
+    public function getQuestion(string $gameId, string $questionId): Question
     {
         return $this->getAnswerModelForQuestion($gameId, $questionId)->question;
     }
 
-    public function answerQuestion(string $gameId, string $questionId, string $answer)
+    public function answerQuestion(string $gameId, string $questionId, string $answer): Answer
     {
         $answerModel               = $this->getAnswerModelForQuestion($gameId, $questionId);
         $answerModel->answer       = $answer;
@@ -46,21 +46,21 @@ class GameService
         return $answerModel;
     }
 
-    public function getQuestionWithLifeline(string $gameId, string $questionId, string $type)
+    public function getQuestionWithLifeline(string $gameId, string $questionId, string $type): Question
     {
         return LifeLine::for($this->getAnswerModelForQuestion($gameId, $questionId))->apply($type);
     }
 
     /**
      * Get answer model for question
-     * Makes sure there is only ever one for a given game and user per question
+     * Makes sure there is only ever one for a given game, user and question
      *
      * @param string $gameId
      * @param string $questionId
      *
      * @return Answer
      */
-    private function getAnswerModelForQuestion(string $gameId, string $questionId): Model
+    private function getAnswerModelForQuestion(string $gameId, string $questionId): Answer
     {
         return Answer::firstOrCreate([
             'game_id'     => $gameId,
@@ -71,11 +71,9 @@ class GameService
 
     public function getGameResult($gameId): Collection
     {
-        $answers = Answer::where('game_id', $gameId)
-                         ->where('user_id', $this->user->id)
-                         ->get();
-
-        return $answers;
+        return Answer::where('game_id', $gameId)
+                     ->where('user_id', $this->user->id)
+                     ->get();
     }
 
 }
