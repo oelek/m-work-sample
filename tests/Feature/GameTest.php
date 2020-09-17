@@ -124,7 +124,7 @@ class GameTest extends TestCase
 
         foreach ($game->questions as $question) {
 
-            $fakeDate = now()->addSeconds(-50);
+            $fakeDate = now()->addSeconds(-16);
 
             Answer::firstOrCreate([
                 'game_id'     => $game->id,
@@ -175,7 +175,7 @@ class GameTest extends TestCase
             'user_id'     => $user->id,
         ]);
 
-        $answer->created_at = $answer->created_at->addSeconds(-16);
+        $answer->created_at = $answer->created_at->addSeconds(-24);
         $answer->save(['timestamps' => false]);
 
 
