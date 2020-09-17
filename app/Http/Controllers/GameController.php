@@ -23,6 +23,10 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'quiz_id' => 'exists:quiz,id'
+        ]);
+
         $game = $this->gameService
             ->user($request->user())
             ->createGame($request->input('quiz_id'));
@@ -46,18 +50,22 @@ class GameController extends Controller
 
     public function storeAnswer(Request $request, $gameId, $questionId)
     {
+        $this->validate($request, [
+            'answer' => 'required|string'
+        ]);
+
         $answer = $this->gameService
             ->user($request->user())
-            ->answerQuestion($gameId, $questionId, $request->input('answer', ''));
+            ->answerQuestion($gameId, $questionId, $request->input('answer') ?? '');
 
         return new AnswerResource($answer);
     }
 
     public function showAnswers(Request $request, $gameId)
     {
-        return response()->json([
-            'data' => $this->gameService
-                ->user($request->user())->getGameResult($gameId)
-        ]);
+        $answers = $this->gameService
+            ->user($request->user())->getGameResult($gameId);
+
+        return AnswerResource::collection($answers);
     }
 }
