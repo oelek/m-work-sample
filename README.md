@@ -16,7 +16,8 @@ A web service for quiz questions.
 * Start server `php artisan serve`
 
 ### Auth
-All requests must have an basic authorization header present. 
+All requests must have a basic authorization header present. 
+A user should be seeded with credentials: `Authorization : Basic Z2FtZUBtZXIuY29tOnBhc3N3b3Jk`
 
 ### Routes
 |Verb    |  URI                                     | Description       | Example payload        |
