@@ -16,13 +16,28 @@ class GameService
      */
     private $user;
 
-    public function user(User $user)
+
+    /**
+     * Set currently playing user
+     *
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function user(User $user): GameService
     {
         $this->user = $user;
 
         return $this;
     }
 
+    /**
+     * Create and start a game
+     *
+     * @param string $quizId
+     *
+     * @return Game
+     */
     public function createGame(string $quizId): Game
     {
         return Game::create([
@@ -31,11 +46,29 @@ class GameService
         ]);
     }
 
+    /**
+     * Start playing question
+     * Will record a time limit
+     *
+     * @param string $gameId
+     * @param string $questionId
+     *
+     * @return Question
+     */
     public function getQuestion(string $gameId, string $questionId): Question
     {
         return $this->getAnswerModelForQuestion($gameId, $questionId)->question;
     }
 
+    /**
+     * Submit an answer
+     *
+     * @param string $gameId
+     * @param string $questionId
+     * @param string $answer
+     *
+     * @return Answer
+     */
     public function recordAnswer(string $gameId, string $questionId, string $answer): Answer
     {
         $answerModel               = $this->getAnswerModelForQuestion($gameId, $questionId);
@@ -46,6 +79,31 @@ class GameService
         return $answerModel;
     }
 
+
+    /**
+     * Get result for all answered questions
+     *
+     * @param $gameId
+     *
+     * @return Collection
+     */
+    public function getGameResult($gameId): Collection
+    {
+        return Answer::where('game_id', $gameId)
+                     ->where('user_id', $this->user->id)
+                     ->get();
+    }
+
+    /**
+     * Get question, but modified by a lifeline
+     * Will also record a time limit if not yet done
+     *
+     * @param string $gameId
+     * @param string $questionId
+     * @param string $type
+     *
+     * @return Question
+     */
     public function getQuestionWithLifeline(string $gameId, string $questionId, string $type): Question
     {
         return LifeLine::for($this->getAnswerModelForQuestion($gameId, $questionId))->apply($type);
@@ -71,20 +129,13 @@ class GameService
                     ]);
     }
 
-    public function getGameResult($gameId): Collection
-    {
-        return Answer::where('game_id', $gameId)
-                     ->where('user_id', $this->user->id)
-                     ->get();
-    }
-
     /**
      * @param string $gameId
      * @param string $questionId
      *
      * @return Question
      */
-    public function question(string $gameId, string $questionId): Question
+    private function question(string $gameId, string $questionId): Question
     {
         return Game::findOrFail($gameId)->questions()->findOrFail($questionId);
     }
