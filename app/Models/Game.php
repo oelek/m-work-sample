@@ -16,6 +16,10 @@ class Game extends Model
         'user_id',
     ];
 
+    protected $casts = [
+        'quiz_id' => 'int',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

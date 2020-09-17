@@ -13,7 +13,7 @@ class Question extends Model
 
     protected $fillable = [
         'text',
-        'image_id',
+        'image_url',
         'options',
         'answer',
         'quiz_id',
@@ -21,6 +21,8 @@ class Question extends Model
 
     protected $casts = [
         'options' => 'array',
+        'quiz_id' => 'int',
+        'order'   => 'int',
     ];
 
     public function quiz()

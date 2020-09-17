@@ -14,6 +14,9 @@ class Answer extends Model
     protected $casts = [
         'is_correct'   => 'bool',
         'submitted_at' => 'datetime',
+        'game_id'      => 'int',
+        'question_id'  => 'int',
+        'user_id'      => 'int',
     ];
 
     protected $fillable = [

@@ -15,22 +15,27 @@ class QuestionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $gameId          = $request->route('game');
         $nextQuestionId  = $this->next_question !== null ? $this->next_question->id : null;
-        $nextQuestionUrl = $nextQuestionId ? '/api/games/' . $this->id . '/questions/' . $nextQuestionId : null;
+        $nextQuestionUrl = $nextQuestionId ? '/api/games/' . $gameId . '/questions/' . $nextQuestionId : null;
+        $gameUrl         = '/api/games/' . $gameId;
 
         return [
-            'type'       => 'question',
-            'attributes' => [
-                'id'        => $this->id,
-                'text'      => $this->text,
-                'image_url' => $this->image_url,
-                'options'   => $this->options,
-                'quiz_id'   => $this->quiz_id,
-                'order'     => $this->order,
+            'data' => [
+                'type'       => 'question',
+                'attributes' => [
+                    'id'        => $this->id,
+                    'text'      => $this->text,
+                    'image_url' => $this->image_url,
+                    'options'   => $this->options,
+                    'quiz_id'   => $this->quiz_id,
+                    'order'     => $this->order,
+                ],
             ],
-            'meta'       => [
+            'meta' => [
                 'next_url' => $nextQuestionUrl,
                 'next_id'  => $nextQuestionId,
+                'game_url' => $gameUrl,
             ],
         ];
     }
